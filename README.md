@@ -11,9 +11,10 @@ The first commit is the app the way AI app builders often leave it: it looks fin
 | 3 | "Stripe charged the card, but the user is still on the free plan." | Webhook signature checked against re-serialized JSON, and the update ran with the anon key | `45166c5` |
 
 ```bash
-git checkout broken   # the app before the fixes: 5 of 7 tests fail
-git checkout main     # after the fixes: 7 of 7 pass
-npm test
+git checkout broken                  # the app before the fixes
+npm test -- --testTimeout=30000      # the 5 tests that reproduce the bugs fail
+git checkout main                    # after the fixes
+npm test                             # all 7 pass
 ```
 
 ---

@@ -12,5 +12,8 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["tests/**/*.test.ts"],
+    // Each database test boots Postgres in WebAssembly (PGlite), which can
+    // take more than the default 5 s when test files run in parallel.
+    testTimeout: 30_000,
   },
 });
