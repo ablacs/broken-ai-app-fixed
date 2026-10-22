@@ -23,15 +23,13 @@ export async function handleStripeWebhook(request: Request, deps: Deps = default
     return new Response("Missing stripe-signature header", { status: 400 });
   }
 
-  const body = await request.json();
+  // Stripe signs the exact bytes it sent. Parsing the JSON and serializing it
+  // again changes whitespace, and the signature no longer matches.
+  const rawBody = await request.text();
 
   let event: Stripe.Event;
   try {
-    event = deps.stripe.webhooks.constructEvent(
-      JSON.stringify(body),
-      signature,
-      deps.webhookSecret,
-    );
+    event = deps.stripe.webhooks.constructEvent(rawBody, signature, deps.webhookSecret);
   } catch (err) {
     const message = err instanceof Error ? err.message : "unknown error";
     return new Response(`Webhook signature verification failed: ${message}`, { status: 400 });
